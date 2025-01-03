@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    #user-list {
+      margin-top: 20px;
+    }
+    .user {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #load-users {
+      background-color: #007bff;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+    }
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    #search-name {
+      padding: 5px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    .add-user-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .add-user-form input, .add-user-form button {
+      margin: 5px 0;
+      padding: 8px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .search-btn{
+      background-color: #007bff;
+      color: black;
+    }
+    .add-user-form button {
+      background-color: #28a745;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>User Management</h1>
+
+  <div class="search-container">
+    <input type="text" id="search-name" placeholder="Search by name">
+    <button id="search-btn" style="background-color: #007bff;">Search</button>
+  </div>
+
+  
+
+  <h2>Add a New User</h2>
+  <form id="add-user-form" class="add-user-form">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Add User</button>
+  </form>
+  <button id="load-users">Load All Users</button>
+
+  <div id="user-list"></div>
+  <script>
+    const baseUrl = "http://localhost:3000/users";
+
+    // Fetch and display users
+    document.getElementById("load-users").addEventListener("click", async function() {
+      try {
+        const response = await fetch(baseUrl);
+        const users = await response.json();
+
+        const userListDiv = document.getElementById("user-list");
+        userListDiv.innerHTML = ""; // Clear previous list
+
+        users.forEach(user => {
+          const userDiv = document.createElement("div");
+          userDiv.classList.add("user");
+          userDiv.innerHTML = `
+            <span><strong>${user.name}</strong> (<em>${user.email}</em>)</span>
+            <button class="delete-btn" data-id="${user.id}">Delete</button>
+          `;
+          userListDiv.appendChild(userDiv);
+        });
+
+        // Add delete functionality
+        document.querySelectorAll(".delete-btn").forEach(button => {
+          button.addEventListener("click", async function() {
+            const userId = this.getAttribute("data-id");
+            try {
+              await fetch(`${baseUrl}/${userId}`, { method: "DELETE" });
+              alert("User deleted successfully!");
+              document.getElementById("load-users").click(); // Reload user list
+            } catch (error) {
+              console.error("Error deleting user:", error);
+            }
+          });
+        });
+      } catch (error) {
+        console.error("Error loading users:", error);
+      }
+    });
+
+    // Add a new user
+    document.getElementById("add-user-form").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      const newUser = { name, email };
+
+      try {
+        const response = await fetch(`${baseUrl}/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(newUser)
+        });
+
+        if (response.ok) {
+          alert("User added successfully!");
+          document.getElementById("name").value = "";
+          document.getElementById("email").value = "";
+          document.getElementById("load-users").click(); // Reload the user list
+        } else {
+          alert("Error adding user.");
+        }
+      } catch (error) {
+        console.error("Error adding user:", error);
+      }
+    });
+
+    // Search users by name
+    document.getElementById("search-btn").addEventListener("click", async function() {
+      const name = document.getElementById("search-name").value.trim();
+      if (!name) {
+        alert("Please enter a name to search.");
+        return;
+      }
+
+      try {
+        const response = await fetch(baseUrl);
+        const users = await response.json();
+        const filteredUsers = users.filter(user => user.name.toLowerCase().includes(name.toLowerCase()));
+
+        const userListDiv = document.getElementById("user-list");
+        userListDiv.innerHTML = ""; // Clear previous list
+
+        if (filteredUsers.length === 0) {
+          userListDiv.innerHTML = "<p>No users found with the given name.</p>";
+          return;
+        }
+
+        filteredUsers.forEach(user => {
+          const userDiv = document.createElement("div");
+          userDiv.classList.add("user");
+          userDiv.innerHTML = `
+            <span><strong>${user.name}</strong> (<em>${user.email}</em>)</span>
+            <button class="delete-btn" data-id="${user.id}">Delete</button>
+          `;
+          userListDiv.appendChild(userDiv);
+        });
+      } catch (error) {
+        console.error("Error searching users:", error);
+      }
+    });
+  </script>
+
+</body>
+</html>
