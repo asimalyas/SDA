@@ -1,17 +1,41 @@
-# SDA
-This project is about Software Design.all digarmes behavioral class pakage all digamres of serach book
+# SDA - Smart Traveling System
 
-[![Watch the video](https://img.youtube.com/vi/Y-KiLgwJLEU/0.jpg)](https://www.youtube.com/watch?v=Y-KiLgwJLEU)
+This project is about **Software Design and Architecture (SDA)**. It demonstrates the **Reserve a Seat** use case in the **Smart Traveling System**. The system incorporates all relevant diagrams (behavioral, class, package, etc.), follows the **MVC architecture**, and adheres to **SOLID** and **GRASP** principles for a scalable and professional design.
 
-# Book Search App - MVC in Express.js
+---
 
-This is a simple **MVC-based Express.js** app that allows users to search books by title.
+## Overview: Reserve a Seat Use Case
 
-## Watch the Video Tutorial
+The **Reserve a Seat** use case allows users to:
+1. View available trips.
+2. Reserve a seat on a selected trip.
+3. Receive real-time updates on trip status.
 
-Learn how to implement **MVC** architecture in **Express.js** using this short 1-minute tutorial:
+### Features:
+- **Behavioral Diagrams**: Includes sequence diagrams, activity diagrams, and use case diagrams.
+- **Structural Diagrams**: Class diagrams and package diagrams.
+- **Professional GUI**: User-friendly interface with professional color combinations.
+- **Filters**: Implemented using the **Pipe and Filter** architecture.
+- **Principles Applied**: SOLID and GRASP principles for maintainable and low-coupled design.
 
-[![MVC in Express.js - Book Search App](https://img.youtube.com/vi/IIOhnWEF-mg/0.jpg)](https://youtu.be/IIOhnWEF-mg?si=Fbb00PWl4pT6r6EV)
+---
 
-Click the image to watch the video!
+## **Architecture Used**
 
+### **MVC Architecture**
+- **Model**: Contains business logic and handles data processing (e.g., trips, users, seat reservations).
+- **View**: Provides a graphical interface for user interaction.
+- **Controller**: Acts as a mediator between Model and View, handling user requests and responses.
+
+### **Pipe and Filter**
+- Filters are applied to process trip data before reservation, ensuring the business rules are followed.
+
+---
+
+## **How to Run the Smart Traveling System**
+
+### Steps to Run the Program:
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd <repository-folder>
